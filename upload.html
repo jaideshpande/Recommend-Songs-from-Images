@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload an Image</title>
+</head>
+<body>
+    <h1>Upload a JPG Image</h1>
+    <form action="{{ url_for('file_upload') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg">
+        <input type="submit" value="Upload">
+    </form>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('file-input');
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) {
+                    const fileNameDisplay = document.getElementById('file-name');
+                    fileNameDisplay.textContent = `Selected file: ${fileInput.files[0].name}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
