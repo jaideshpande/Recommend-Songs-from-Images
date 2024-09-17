@@ -65,13 +65,15 @@ def determine_song_rec():
     textModel = genai.GenerativeModel('gemini-pro')
     fav_songs = get_top_tracks(sp)
     #prompt = f"Given this image description: {response.text} and a list of songs I like: {fav_songs}, recommend one song that best fits the description that I would like. Only print the name of the song."
-    prompt = f"Given this rating of an image's energy (from 0 to 1): {response.text} recommend a song that would fit well with this image. Only print the name of the song and the artist."
+    prompt = f"Given this rating of an image's energy (from 0 to 1): {response.text} , and a list of my favorite songs: {fav_songs}, recommend a song that would fit well with this image. Only print the name of the song and the artist."
     
 
     textResponse = textModel.generate_content(prompt) 
     output =  str(textResponse.text)
     #output = output.replace(' by', '')
     print(output)
+    playlist_checker = get_playlist_tracks(sp,'37i9dQZEVXbLRQDuF5jeBp')
+    print(playlist_checker)
     return output
     
 
@@ -93,7 +95,7 @@ def create_spotify_oauth():
     return SpotifyOAuth(client_id = '0fd41a617c7a41018be9a9cb8bcf2582',
                         client_secret = '7b977dcb49d64486ae0b1e9018562f45',
                         redirect_uri = url_for('redirect_page', _external= True),
-                        scope = 'user-library-read playlist-modify-public playlist-modify-private user-read-playback-state user-modify-playback-state user-top-read'
+                        scope = 'user-library-read playlist-modify-public playlist-modify-private user-read-playback-state user-modify-playback-state user-top-read playlist-read-private playlist-read-collaborative'
                         )
 
 @app.route('/play_song')
@@ -140,7 +142,26 @@ def get_top_track_ids(sp):
     return top_track_ids
 
 
+def get_playlist_tracks(sp,playlist_id):
+     # Ensure we have a token
+    if not sp.auth_manager.get_access_token(as_dict=False):
+        raise Exception("Failed to obtain access token")
 
+    # Fetch tracks from the playlist
+    results = sp.playlist_tracks(playlist_id)
+    tracks = []
+    while results:
+        for item in results['items']:
+            track = item['track']
+            if track:  # Check if track details are present
+                title = track['name']
+                artists = ', '.join(artist['name'] for artist in track['artists'])
+                tracks.append((title, artists))
+        if results['next']:
+            results = sp.next(results)
+        else:
+            break
+    return tracks
 
 
 
