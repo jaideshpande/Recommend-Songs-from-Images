@@ -1,0 +1,4 @@
+Fun project I did in Summer '24. The goal is to input a .JPG image and have an AI model suggest a song that matches that image's mood and energy, given the songs that you aleady like. I use the Spotify API to guide the user through authentication, and then I access their most listened to artists. The user uploads a .JPG image from their file system and Gemini-pro-vision-1.5 will output a song and artist. If you have Spotify open (web player or mobile app), this program will start the song playback on your device!
+To run yourself, you'll need to create your own Spotify developer credentials and Google Gemini API Key from the Developer Dashboard. 
+
+Please feel free to fork this repo and make your own changes. Converting images to songs is a fun way for users to express their music taste and discover new songs.
