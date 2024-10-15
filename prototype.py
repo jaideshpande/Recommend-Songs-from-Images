@@ -15,16 +15,23 @@ from PIL import Image
 app = Flask(__name__)
 
 app.config['SESSION_COOKIE_NAME'] = "Spotify Cookie"
-app.secret_key = 'safsl452hlhsasfuihil*^1'
+app.secret_key = os.getenv('APP_SECRET_KEY')
+
 
 TOKEN_INFO = 'token_info'
 token_info = None
 
-genai.configure(api_key='AIzaSyBgfmgzdWIQcofocB04E3entWOs5aY--js') # set into env variable
+Gemini_API_Key = os.getenv('GEMINI_API_KEY')
+genai.configure(api_key=Gemini_API_Key) 
 
 #For user image upload
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 app.config['ALLOWED_EXTENSIONS'] = {'jpg'}
+
+# Spotify Credentials for Initialization
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+
 
 @app.route('/')
 def login():
@@ -92,8 +99,8 @@ def get_token():  # refreshes token if it expires
 
 
 def create_spotify_oauth():
-    return SpotifyOAuth(client_id = '0fd41a617c7a41018be9a9cb8bcf2582',
-                        client_secret = '7b977dcb49d64486ae0b1e9018562f45',
+    return SpotifyOAuth(client_id = SPOTIFY_CLIENT_ID,
+                        client_secret = SPOTIFY_CLIENT_SECRET,
                         redirect_uri = url_for('redirect_page', _external= True),
                         scope = 'user-library-read playlist-modify-public playlist-modify-private user-read-playback-state user-modify-playback-state user-top-read playlist-read-private playlist-read-collaborative'
                         )
